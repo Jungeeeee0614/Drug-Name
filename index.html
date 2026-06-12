@@ -119,7 +119,6 @@
     </header>
 
     <div id="game-container">
-        <!-- Cards are hardcoded directly into the HTML framework so they are physically impossible to hide -->
         <div id="cards-pool">
             <div class="drug-card" id="d1" draggable="true" data-class="Alpha1 Agonist" data-sub="Hypotension/Shock">Phenylephrine</div>
             <div class="drug-card" id="d2" draggable="true" data-class="Alpha1 Antagonist" data-sub="BPH ONLY">Tamsulosin</div>
@@ -174,7 +173,6 @@
         const totalCards = 19;
         const pool = document.getElementById('cards-pool');
 
-        // Explicit Function Hoisting Declarations
         function flashError(card) {
             card.style.backgroundColor = '#e74c3c';
             setTimeout(() => { card.style.backgroundColor = '#0984e3'; }, 400);
@@ -188,3 +186,5 @@
         }
 
         function handlePhase2Match(card, subBox) {
+            subBox.appendChild(card); card.draggable = false; card.style.backgroundColor = '#9b59b6';
+            score++; document.getElementById('score').innerText = score;
