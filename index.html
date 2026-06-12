@@ -75,7 +75,6 @@
             user-select: none;
             -webkit-user-select: none;
             font-size: 0.95rem;
-            touch-action: none;
         }
         .drug-card:active { cursor: grabbing; }
         
@@ -98,7 +97,7 @@
             flex-direction: column;
             gap: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: background 0.2s;
+            transition: background 0.2s, border-color 0.2s;
             min-height: 140px;
         }
         .class-bucket h3 {
@@ -109,9 +108,8 @@
             padding-bottom: 5px;
             font-size: 1rem;
         }
-        .drag-over { background-color: #e8f8f5; border-color: #00b894; }
+        .drag-over { background-color: #e8f8f5 !important; border-color: #00b894 !important; }
 
-        /* Subcategories (Phase 2 mini-boxes) styling */
         .sub-zone {
             display: flex;
             flex-direction: column;
@@ -132,6 +130,7 @@
             flex-wrap: wrap;
             gap: 5px;
             align-content: flex-start;
+            transition: background-color 0.2s, border-color 0.2s;
         }
         .sub-bucket-title {
             font-size: 0.75rem;
@@ -238,7 +237,6 @@
             { name: "Dobutamine", class: "Beta 1 Agonist", sub: "*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)" }
         ];
 
-        // Unique dynamic indications based on your layout data
         const subcategoriesConfig = {
             "Alpha1 Agonist": ["Hypotension/Shock", "Orthostatic Hypotension", "Nasal Congestion"],
             "Alpha1 Antagonist": ["BPH ONLY", "PTSD Nightmares & BPH + HTN", "BPH + HTN"],
@@ -259,3 +257,4 @@
             matchedCount = 0;
             scoreDisplay.innerText = "0";
             document.getElementById('phase-indicator').innerText = "Stage 1: Receptor Classes";
+
