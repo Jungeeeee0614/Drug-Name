@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autonomic Pharmacology Subcategory Game</title>
+    <title>Autonomic Pharmacology Two-Stage Mastery</title>
     <style>
         html, body {
             margin: 0;
@@ -12,272 +12,250 @@
             height: 100%;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f6fa;
-            user-select: none;
-            -webkit-user-select: none;
+            background-color: #f0f3f4;
+            overflow-x: hidden;
         }
 
         body {
             display: flex;
             flex-direction: column;
-            padding: 12px;
+            padding: 15px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             flex-shrink: 0;
         }
-        h1 { color: #2c3e50; margin: 0 0 3px 0; font-size: 1.3rem; }
-        p { color: #7f8c8d; margin: 0; font-size: 0.85rem; }
-
-        #active-card-zone {
+        h1 { color: #2c3e50; margin: 0 0 5px 0; font-size: 1.6rem; }
+        p { color: #7f8c8d; margin: 0; font-size: 0.95rem; font-weight: bold; }
+        #phase-indicator {
+            display: inline-block;
+            background-color: #d2dae2;
+            color: #2c3e50;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; 
+            width: 100%;
+            gap: 15px;
+            min-height: 0;
+        }
+        
+        #cards-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
             background: #ffffff;
             border: 2px dashed #b2bec3;
             border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 12px;
-            min-height: 50px;
-            display: flex;
+            min-height: 80px;
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
         }
-
-        .drug-display-card {
+        
+        .drug-card {
             background-color: #0984e3;
             color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
+            padding: 10px 16px;
+            border-radius: 20px;
+            cursor: grab;
             font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-            display: inline-block;
-            animation: popIn 0.3s ease-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.11);
+            user-select: none;
+            -webkit-user-select: none;
+            font-size: 0.95rem;
+            touch-action: none;
         }
-
-        @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        #subcategories-grid {
+        .drug-card:active { cursor: grabbing; }
+        
+        #classes-container {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
             flex-grow: 1;
+            min-height: 0; 
             overflow-y: auto;
             padding-bottom: 10px;
         }
-
-        /* Screen optimization for larger smartphones and tablets */
-        @media(min-width: 480px) {
-            #subcategories-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        .sub-bucket {
+        
+        .class-bucket {
             background-color: #ffffff;
-            border: 2px solid #dcdde1;
+            border: 2px solid #dfe6e9;
             border-radius: 8px;
-            padding: 10px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.2s ease;
-            cursor: pointer;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: background 0.2s;
+            min-height: 140px;
         }
-
-        .sub-bucket:active {
-            transform: scale(0.98);
-        }
-
-        .sub-bucket h3 {
+        .class-bucket h3 {
             margin: 0 0 5px 0;
-            font-size: 0.85rem;
-            color: #2f3640;
-            border-bottom: 2px solid #0984e3;
-            padding-bottom: 3px;
+            text-align: center;
+            color: #2d3436;
+            border-bottom: 2px solid #00b894;
+            padding-bottom: 5px;
+            font-size: 1rem;
         }
+        .drag-over { background-color: #e8f8f5; border-color: #00b894; }
 
-        .sub-bucket .parent-class {
-            font-size: 0.7rem;
-            color: #718093;
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-bottom: 2px;
+        /* Subcategories (Phase 2 mini-boxes) styling */
+        .sub-zone {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px dashed #b2bec3;
         }
-
-        .matched-drugs-list {
+        .sub-bucket {
+            background-color: #ffffff;
+            border: 1.5px solid #dcdde1;
+            border-radius: 6px;
+            padding: 8px;
+            min-height: 45px;
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
-            margin-top: 5px;
+            align-content: flex-start;
         }
-
-        .mini-drug-tag {
-            background-color: #2ecc71;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
+        .sub-bucket-title {
             font-size: 0.75rem;
             font-weight: bold;
-            animation: tagPop 0.2s ease-out;
+            color: #7f8c8d;
+            margin-bottom: 2px;
+            text-transform: uppercase;
         }
-
-        @keyframes tagPop {
-            0% { transform: scale(0.5); }
-            100% { transform: scale(1); }
-        }
-
+        
         #footer-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 8px;
+            padding-top: 10px;
             border-top: 1px solid #dcdde1;
             margin-top: auto;
             flex-shrink: 0;
         }
-
         #score-board {
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #27ae60;
         }
-
         .reset-btn {
             background-color: #e74c3c;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
             cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Autonomic Subcategory Match</h1>
-        <p>Tap the active medication, then tap its matching subcategory below!</p>
+        <h1>Autonomic Two-Stage Mastery</h1>
+        <p id="instruction-text">STAGE 1: Drag each drug into its correct major receptor class bucket!</p>
+        <div id="phase-indicator">Stage 1: Receptor Classes</div>
     </header>
 
-    <!-- Prominent touch target for the active medication card -->
-    <div id="active-card-zone">
-        <div id="current-card">Loading...</div>
-    </div>
+    <div id="game-container">
+        <div id="cards-pool"></div>
 
-    <!-- Layout arranged according to the subcategory indicators from your chart -->
-    <div id="subcategories-grid">
-        <div class="sub-bucket" data-sub="Hypotension/Shock">
-            <span class="parent-class">Alpha1 Agonists</span>
-            <h3>Hypotension/Shock</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="Orthostatic Hypotension">
-            <span class="parent-class">Alpha1 Agonists</span>
-            <h3>Orthostatic Hypotension</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="Nasal Congestion">
-            <span class="parent-class">Alpha1 Agonists</span>
-            <h3>Nasal Congestion</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="BPH ONLY">
-            <span class="parent-class">Alpha1 Antagonists</span>
-            <h3>BPH ONLY</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="PTSD Nightmares & BPH + HTN">
-            <span class="parent-class">Alpha1 Antagonists</span>
-            <h3>PTSD Nightmares & BPH + HTN</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="BPH + HTN">
-            <span class="parent-class">Alpha1 Antagonists</span>
-            <h3>BPH + HTN</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="HTN Urgency">
-            <span class="parent-class">Alpha2 Agonists</span>
-            <h3>HTN Urgency</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="HTN in Pregnancy">
-            <span class="parent-class">Alpha2 Agonists</span>
-            <h3>HTN in Pregnancy</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="Procedural Sedation">
-            <span class="parent-class">Alpha2 Agonists</span>
-            <h3>Procedural Sedation</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="Muscle Spasms">
-            <span class="parent-class">Alpha2 Agonists</span>
-            <h3>Muscle Spasms</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="ADHD">
-            <span class="parent-class">Alpha2 Agonists</span>
-            <h3>ADHD</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="Depression">
-            <span class="parent-class">Alpha2 Antagonists</span>
-            <h3>Depression</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="ED">
-            <span class="parent-class">Alpha2 Antagonists</span>
-            <h3>ED</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="No Subcategory Listed">
-            <span class="parent-class">Nonselective Alpha Agonists</span>
-            <h3>No Subcategory Listed</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="*IRREVERSIBLE*(Pheochromocytoma Management)">
-            <span class="parent-class">Nonselective Alpha Antagonists</span>
-            <h3>*IRREVERSIBLE* (Pheochromocytoma)</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)">
-            <span class="parent-class">Nonselective Alpha Antagonists</span>
-            <h3>*REVERSIBLE* (Ischemia/HTN Crises)</h3>
-            <div class="matched-drugs-list"></div>
-        </div>
-        <div class="sub-bucket" data-sub="*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)">
-            <span class="parent-class">Beta 1 Agonists</span>
-            <h3>*B1 &gt; B2 &gt; A1* (Heart Failure)</h3>
-            <div class="matched-drugs-list"></div>
+        <div id="classes-container">
+            <div class="class-bucket" data-class="Alpha1 Agonist">
+                <h3>Alpha1 Agonists</h3>
+                <div class="sub-zone" style="display:none;"></div>
+            </div>
+            <div class="class-bucket" data-class="Alpha1 Antagonist">
+                <h3>Alpha1 ANTagonists</h3>
+                <div class="sub-zone" style="display:none;"></div>
+            </div>
+            <div class="class-bucket" data-class="Alpha2 Agonist">
+                <h3>Alpha2 Agonists</h3>
+                <div class="sub-zone" style="display:none;"></div>
+            </div>
+            <div class="class-bucket" data-class="Alpha2 Antagonist">
+                <h3>Alpha2 ANTagonists</h3>
+                <div class="sub-zone" style="display:none;"></div>
+            </div>
+            <div class="class-bucket" data-class="Nonselective Alpha Agonist">
+                <h3>Nonselective Alpha Agonists</h3>
+                <div class="sub-zone" style="display:none;"></div>
+            </div>
+            <div class="class-bucket" data-class="Nonselective Alpha Antagonist">
+                <h3>Nonselective Alpha ANTagonists</h3>
+                <div class="sub-zone" style="display:none;"></div>
+            </div>
+            <div class="class-bucket" data-class="Beta 1 Agonist">
+                <h3>Beta 1 Agonists</h3>
+                <div class="sub-zone" style="display:none;"></div>
+            </div>
         </div>
     </div>
 
     <div id="footer-bar">
-        <div id="score-board">Progress: <span id="score">0</span> / 16</div>
-        <button class="reset-btn" onclick="resetGame()">Restart</button>
+        <div id="score-board">Progress: <span id="score">0</span> / 17</div>
+        <button class="reset-btn" onclick="location.reload()">Restart</button>
     </div>
 
     <script>
-        // Formatted exactly from the visual layout of your source image
-        const drugDatabase = [
-            { name: "Phenylephrine", sub: "Hypotension/Shock" },
-            { name: "Midodrine", sub: "Orthostatic Hypotension" },
-            { name: "Oxymetazoline", sub: "Nasal Congestion" },
-            { name: "Tamsulosin", sub: "BPH ONLY" },
-            { name: "Prazosin", sub: "PTSD Nightmares & BPH + HTN" },
-            { name: "Terazosin", sub: "BPH + HTN" },
-            { name: "Doxazosin", sub: "BPH + HTN" },
-            { name: "Clonidine", sub: "HTN Urgency" },
-            { name: "A-Methyldopa", sub: "HTN in Pregnancy" },
-            { name: "Dexmedetomidine", sub: "Procedural Sedation" },
-            { name: "Tizanidine", sub: "Muscle Spasms" },
-            { name: "Guanfacine", sub: "ADHD" },
-            { name: "Mirtazapine", sub: "Depression" },
-            { name: "Yohimbine", sub: "ED" },
+        const drugData = [
+            { name: "Phenylephrine", class: "Alpha1 Agonist", sub: "Hypotension/Shock" },
+            { name: "Midodrine", class: "Alpha1 Agonist", sub: "Orthostatic Hypotension" },
+            { name: "Oxymetazoline", class: "Alpha1 Agonist", sub: "Nasal Congestion" },
+            { name: "Tamsulosin", class: "Alpha1 Antagonist", sub: "BPH ONLY" },
+            { name: "Prazosin", class: "Alpha1 Antagonist", sub: "PTSD Nightmares & BPH + HTN" },
+            { name: "Terazosin", class: "Alpha1 Antagonist", sub: "BPH + HTN" },
+            { name: "Doxazosin", class: "Alpha1 Antagonist", sub: "BPH + HTN" },
+            { name: "Clonidine", class: "Alpha2 Agonist", sub: "HTN Urgency" },
+            { name: "A-Methyldopa", class: "Alpha2 Agonist", sub: "HTN in Pregnancy" },
+            { name: "Dexmedetomidine", class: "Alpha2 Agonist", sub: "Procedural Sedation" },
+            { name: "Tizanidine", class: "Alpha2 Agonist", sub: "Muscle Spasms" },
+            { name: "Guanfacine", class: "Alpha2 Agonist", sub: "ADHD" },
+            { name: "Mirtazapine", class: "Alpha2 Antagonist", sub: "Depression" },
+            { name: "Yohimbine", class: "Alpha2 Antagonist", sub: "ED" },
+            { name: "Norepinephrine", class: "Nonselective Alpha Agonist", sub: "No Subcategory Listed" },
+            { name: "Epinephrine", class: "Nonselective Alpha Agonist", sub: "No Subcategory Listed" },
+            { name: "Phenoxybenzamine", class: "Nonselective Alpha Antagonist", sub: "*IRREVERSIBLE*(Pheochromocytoma Management)" },
+            { name: "Phentolamine", class: "Nonselective Alpha Antagonist", sub: "*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)" },
+            { name: "Dobutamine", class: "Beta 1 Agonist", sub: "*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)" }
+        ];
+
+        // Unique dynamic indications based on your layout data
+        const subcategoriesConfig = {
+            "Alpha1 Agonist": ["Hypotension/Shock", "Orthostatic Hypotension", "Nasal Congestion"],
+            "Alpha1 Antagonist": ["BPH ONLY", "PTSD Nightmares & BPH + HTN", "BPH + HTN"],
+            "Alpha2 Agonist": ["HTN Urgency", "HTN in Pregnancy", "Procedural Sedation", "Muscle Spasms", "ADHD"],
+            "Alpha2 Antagonist": ["Depression", "ED"],
+            "Nonselective Alpha Agonist": ["No Subcategory Listed"],
+            "Nonselective Alpha Antagonist": ["*IRREVERSIBLE*(Pheochromocytoma Management)", "*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)"],
+            "Beta 1 Agonist": ["*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)"]
+        };
+
+        let currentPhase = 1; 
+        let matchedCount = 0;
+        const cardsPool = document.getElementById('cards-pool');
+        const scoreDisplay = document.getElementById('score');
+
+        function initPhase1() {
+            currentPhase = 1;
+            matchedCount = 0;
+            scoreDisplay.innerText = "0";
+            document.getElementById('phase-indicator').innerText = "Stage 1: Receptor Classes";
