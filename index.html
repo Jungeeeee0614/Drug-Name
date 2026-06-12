@@ -215,48 +215,43 @@
     </div>
 
     <script>
-        const drugData = [
-            { name: "Phenylephrine", class: "Alpha1 Agonist", sub: "Hypotension/Shock" },
-            { name: "Midodrine", class: "Alpha1 Agonist", sub: "Orthostatic Hypotension" },
-            { name: "Oxymetazoline", class: "Alpha1 Agonist", sub: "Nasal Congestion" },
-            { name: "Tamsulosin", class: "Alpha1 Antagonist", sub: "BPH ONLY" },
-            { name: "Prazosin", class: "Alpha1 Antagonist", sub: "PTSD Nightmares & BPH + HTN" },
-            { name: "Terazosin", class: "Alpha1 Antagonist", sub: "BPH + HTN" },
-            { name: "Doxazosin", class: "Alpha1 Antagonist", sub: "BPH + HTN" },
-            { name: "Clonidine", class: "Alpha2 Agonist", sub: "HTN Urgency" },
-            { name: "A-Methyldopa", class: "Alpha2 Agonist", sub: "HTN in Pregnancy" },
-            { name: "Dexmedetomidine", class: "Alpha2 Agonist", sub: "Procedural Sedation" },
-            { name: "Tizanidine", class: "Alpha2 Agonist", sub: "Muscle Spasms" },
-            { name: "Guanfacine", class: "Alpha2 Agonist", sub: "ADHD" },
-            { name: "Mirtazapine", class: "Alpha2 Antagonist", sub: "Depression" },
-            { name: "Yohimbine", class: "Alpha2 Antagonist", sub: "ED" },
-            { name: "Norepinephrine", class: "Nonselective Alpha Agonist", sub: "No Subcategory Listed" },
-            { name: "Epinephrine", class: "Nonselective Alpha Agonist", sub: "No Subcategory Listed" },
-            { name: "Phenoxybenzamine", class: "Nonselective Alpha Antagonist", sub: "*IRREVERSIBLE*(Pheochromocytoma Management)" },
-            { name: "Phentolamine", class: "Nonselective Alpha Antagonist", sub: "*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)" },
-            { name: "Dobutamine", class: "Beta 1 Agonist", sub: "*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)" }
-        ];
+        // Diagnostic error tracking wrapper
+        try {
+            const drugData = [
+                { name: "Phenylephrine", class: "Alpha1 Agonist", sub: "Hypotension/Shock" },
+                { name: "Midodrine", class: "Alpha1 Agonist", sub: "Orthostatic Hypotension" },
+                { name: "Oxymetazoline", class: "Alpha1 Agonist", sub: "Nasal Congestion" },
+                { name: "Tamsulosin", class: "Alpha1 Antagonist", sub: "BPH ONLY" },
+                { name: "Prazosin", class: "Alpha1 Antagonist", sub: "PTSD Nightmares & BPH + HTN" },
+                { name: "Terazosin", class: "Alpha1 Antagonist", sub: "BPH + HTN" },
+                { name: "Doxazosin", class: "Alpha1 Antagonist", sub: "BPH + HTN" },
+                { name: "Clonidine", class: "Alpha2 Agonist", sub: "HTN Urgency" },
+                { name: "A-Methyldopa", class: "Alpha2 Agonist", sub: "HTN in Pregnancy" },
+                { name: "Dexmedetomidine", class: "Alpha2 Agonist", sub: "Procedural Sedation" },
+                { name: "Tizanidine", class: "Alpha2 Agonist", sub: "Muscle Spasms" },
+                { name: "Guanfacine", class: "Alpha2 Agonist", sub: "ADHD" },
+                { name: "Mirtazapine", class: "Alpha2 Antagonist", sub: "Depression" },
+                { name: "Yohimbine", class: "Alpha2 Antagonist", sub: "ED" },
+                { name: "Norepinephrine", class: "Nonselective Alpha Agonist", sub: "No Subcategory Listed" },
+                { name: "Epinephrine", class: "Nonselective Alpha Agonist", sub: "No Subcategory Listed" },
+                { name: "Phenoxybenzamine", class: "Nonselective Alpha Antagonist", sub: "*IRREVERSIBLE*(Pheochromocytoma Management)" },
+                { name: "Phentolamine", class: "Nonselective Alpha Antagonist", sub: "*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)" },
+                { name: "Dobutamine", class: "Beta 1 Agonist", sub: "*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)" }
+            ];
 
-        const subcategoriesConfig = {
-            "Alpha1 Agonist": ["Hypotension/Shock", "Orthostatic Hypotension", "Nasal Congestion"],
-            "Alpha1 Antagonist": ["BPH ONLY", "PTSD Nightmares & BPH + HTN", "BPH + HTN"],
-            "Alpha2 Agonist": ["HTN Urgency", "HTN in Pregnancy", "Procedural Sedation", "Muscle Spasms", "ADHD"],
-            "Alpha2 Antagonist": ["Depression", "ED"],
-            "Nonselective Alpha Agonist": ["No Subcategory Listed"],
-            "Nonselective Alpha Antagonist": ["*IRREVERSIBLE*(Pheochromocytoma Management)", "*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)"],
-            "Beta 1 Agonist": ["*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)"]
-        };
+            const subcategoriesConfig = {
+                "Alpha1 Agonist": ["Hypotension/Shock", "Orthostatic Hypotension", "Nasal Congestion"],
+                "Alpha1 Antagonist": ["BPH ONLY", "PTSD Nightmares & BPH + HTN", "BPH + HTN"],
+                "Alpha2 Agonist": ["HTN Urgency", "HTN in Pregnancy", "Procedural Sedation", "Muscle Spasms", "ADHD"],
+                "Alpha2 Antagonist": ["Depression", "ED"],
+                "Nonselective Alpha Agonist": ["No Subcategory Listed"],
+                "Nonselective Alpha Antagonist": ["*IRREVERSIBLE*(Pheochromocytoma Management)", "*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)"],
+                "Beta 1 Agonist": ["*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)"]
+            };
 
-        let currentPhase = 1; 
-        let matchedCount = 0;
-        const cardsPool = document.getElementById('cards-pool');
-        const scoreDisplay = document.getElementById('score');
+            let currentPhase = 1; 
+            let matchedCount = 0;
+            const cardsPool = document.getElementById('cards-pool');
+            const scoreDisplay = document.getElementById('score');
 
-        function initPhase1() {
-            currentPhase = 1;
-            matchedCount = 0;
-            scoreDisplay.innerText = "0";
-            cardsPool.innerHTML = '';
-            
-            document.getElementById('phase-indicator').innerText = "Stage 1: Receptor Classes";
-
+            // Explicitly declare functions sequentially to guarantee execution safety
