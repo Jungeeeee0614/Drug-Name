@@ -22,14 +22,15 @@
         
         #phase-indicator {
             display: inline-block;
-            background-color: #d2dae2;
-            color: #2c3e50;
+            background-color: #34495e;
+            color: #ffffff;
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 0.85rem;
             margin-top: 5px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: bold;
         }
         #cards-pool {
             display: flex;
@@ -49,14 +50,20 @@
             color: white;
             padding: 10px 16px;
             border-radius: 20px;
-            cursor: grab;
+            cursor: pointer;
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.11);
             user-select: none;
             -webkit-user-select: none;
             font-size: 0.95rem;
+            transition: transform 0.1s, background-color 0.2s;
         }
-        .drug-card:active { cursor: grabbing; }
+        .drug-card:active { transform: scale(0.95); }
+        .selected-card {
+            background-color: #e67e22 !important; /* Visual cue when active */
+            transform: scale(1.05);
+            box-shadow: 0 0 12px #e67e22;
+        }
         #classes-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -74,6 +81,8 @@
             gap: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             min-height: 140px;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
         .class-bucket h3 {
             margin: 0 0 5px 0;
@@ -83,28 +92,53 @@
             padding-bottom: 5px;
             font-size: 1rem;
         }
-        .drag-over { background-color: #e8f8f5 !important; border-color: #00b894 !important; }
         .sub-zone {
             display: flex;
             flex-direction: column;
             gap: 8px;
             margin-top: 5px;
-            background: #f8f9fa;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px dashed #b2bec3;
         }
-        .sub-bucket {
-            background-color: #ffffff;
-            border: 1.5px solid #dcdde1;
+        .sub-bucket-btn {
+            background-color: #f1f2f6;
+            border: 1.5px solid #ced6e0;
+            color: #2f3542;
             border-radius: 6px;
             padding: 8px;
-            min-height: 45px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sub-bucket-btn:hover { background-color: #dfe4ea; }
+        .placed-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
         }
-        .sub-bucket-title { font-size: 0.75rem; font-weight: bold; color: #7f8c8d; text-transform: uppercase; }
+        .nested-tag {
+            background-color: #9b59b6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+        .bucket-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: auto;
+        }
+        .class-tag {
+            background-color: #2ecc71;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
         #footer-bar { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #dcdde1; margin-top: auto; }
         #score-board { font-size: 1.1rem; font-weight: bold; color: #27ae60; }
         .reset-btn { background-color: #e74c3c; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; }
@@ -114,41 +148,41 @@
 
     <header>
         <h1>Autonomic Two-Stage Mastery</h1>
-        <p id="instruction-text">STAGE 1: Drag each drug into its correct major receptor class bucket!</p>
+        <p id="instruction-text">STEP 1: Tap a medication card, then tap its major receptor class box below!</p>
         <div id="phase-indicator">Stage 1: Receptor Classes</div>
     </header>
 
     <div id="game-container">
         <div id="cards-pool">
-            <div class="drug-card" id="d1" draggable="true" data-class="Alpha1 Agonist" data-sub="Hypotension/Shock">Phenylephrine</div>
-            <div class="drug-card" id="d2" draggable="true" data-class="Alpha1 Antagonist" data-sub="BPH ONLY">Tamsulosin</div>
-            <div class="drug-card" id="d3" draggable="true" data-class="Alpha2 Agonist" data-sub="HTN Urgency">Clonidine</div>
-            <div class="drug-card" id="d4" draggable="true" data-class="Alpha2 Antagonist" data-sub="Depression">Mirtazapine</div>
-            <div class="drug-card" id="d5" draggable="true" data-class="Nonselective Alpha Agonist" data-sub="No Subcategory Listed">Norepinephrine</div>
-            <div class="drug-card" id="d6" draggable="true" data-class="Nonselective Alpha Antagonist" data-sub="*IRREVERSIBLE*(Pheochromocytoma Management)">Phenoxybenzamine</div>
-            <div class="drug-card" id="d7" draggable="true" data-class="Beta 1 Agonist" data-sub="*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)">Dobutamine</div>
-            <div class="drug-card" id="d8" draggable="true" data-class="Alpha1 Agonist" data-sub="Orthostatic Hypotension">Midodrine</div>
-            <div class="drug-card" id="d9" draggable="true" data-class="Alpha1 Antagonist" data-sub="PTSD Nightmares & BPH + HTN">Prazosin</div>
-            <div class="drug-card" id="d10" draggable="true" data-class="Alpha2 Agonist" data-sub="HTN in Pregnancy">A-Methyldopa</div>
-            <div class="drug-card" id="d11" draggable="true" data-class="Alpha2 Antagonist" data-sub="ED">Yohimbine</div>
-            <div class="drug-card" id="d12" draggable="true" data-class="Nonselective Alpha Agonist" data-sub="No Subcategory Listed">Epinephrine</div>
-            <div class="drug-card" id="d13" draggable="true" data-class="Nonselective Alpha Antagonist" data-sub="*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)">Phentolamine</div>
-            <div class="drug-card" id="d14" draggable="true" data-class="Alpha1 Agonist" data-sub="Nasal Congestion">Oxymetazoline</div>
-            <div class="drug-card" id="d15" draggable="true" data-class="Alpha1 Antagonist" data-sub="BPH + HTN">Terazosin</div>
-            <div class="drug-card" id="d16" draggable="true" data-class="Alpha2 Agonist" data-sub="Procedural Sedation">Dexmedetomidine</div>
-            <div class="drug-card" id="d17" draggable="true" data-class="Alpha1 Antagonist" data-sub="BPH + HTN">Doxazosin</div>
-            <div class="drug-card" id="d18" draggable="true" data-class="Alpha2 Agonist" data-sub="Muscle Spasms">Tizanidine</div>
-            <div class="drug-card" id="d19" draggable="true" data-class="Alpha2 Agonist" data-sub="ADHD">Guanfacine</div>
+            <div class="drug-card" id="d1" data-class="Alpha1 Agonist" data-sub="Hypotension/Shock">Phenylephrine</div>
+            <div class="drug-card" id="d2" data-class="Alpha1 Antagonist" data-sub="BPH ONLY">Tamsulosin</div>
+            <div class="drug-card" id="d3" data-class="Alpha2 Agonist" data-sub="HTN Urgency">Clonidine</div>
+            <div class="drug-card" id="d4" data-class="Alpha2 Antagonist" data-sub="Depression">Mirtazapine</div>
+            <div class="drug-card" id="d5" data-class="Nonselective Alpha Agonist" data-sub="No Subcategory Listed">Norepinephrine</div>
+            <div class="drug-card" id="d6" data-class="Nonselective Alpha Antagonist" data-sub="*IRREVERSIBLE*(Pheochromocytoma Management)">Phenoxybenzamine</div>
+            <div class="drug-card" id="d7" data-class="Beta 1 Agonist" data-sub="*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)">Dobutamine</div>
+            <div class="drug-card" id="d8" data-class="Alpha1 Agonist" data-sub="Orthostatic Hypotension">Midodrine</div>
+            <div class="drug-card" id="d9" data-class="Alpha1 Antagonist" data-sub="PTSD Nightmares & BPH + HTN">Prazosin</div>
+            <div class="drug-card" id="d10" data-class="Alpha2 Agonist" data-sub="HTN in Pregnancy">A-Methyldopa</div>
+            <div class="drug-card" id="d11" data-class="Alpha2 Antagonist" data-sub="ED">Yohimbine</div>
+            <div class="drug-card" id="d12" data-class="Nonselective Alpha Agonist" data-sub="No Subcategory Listed">Epinephrine</div>
+            <div class="drug-card" id="d13" data-class="Nonselective Alpha Antagonist" data-sub="*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)">Phentolamine</div>
+            <div class="drug-card" id="d14" data-class="Alpha1 Agonist" data-sub="Nasal Congestion">Oxymetazoline</div>
+            <div class="drug-card" id="d15" data-class="Alpha1 Antagonist" data-sub="BPH + HTN">Terazosin</div>
+            <div class="drug-card" id="d16" data-class="Alpha2 Agonist" data-sub="Procedural Sedation">Dexmedetomidine</div>
+            <div class="drug-card" id="d17" data-class="Alpha1 Antagonist" data-sub="BPH + HTN">Doxazosin</div>
+            <div class="drug-card" id="d18" data-class="Alpha2 Agonist" data-sub="Muscle Spasms">Tizanidine</div>
+            <div class="drug-card" id="d19" data-class="Alpha2 Agonist" data-sub="ADHD">Guanfacine</div>
         </div>
 
         <div id="classes-container">
-            <div class="class-bucket" data-class="Alpha1 Agonist"><h3>Alpha1 Agonists</h3><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Alpha1 Antagonist"><h3>Alpha1 ANTagonists</h3><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Alpha2 Agonist"><h3>Alpha2 Agonists</h3><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Alpha2 Antagonist"><h3>Alpha2 ANTagonists</h3><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Nonselective Alpha Agonist"><h3>Nonselective Alpha Agonists</h3><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Nonselective Alpha Antagonist"><h3>Nonselective Alpha ANTagonists</h3><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Beta 1 Agonist"><h3>Beta 1 Agonists</h3><div class="sub-zone" style="display:none;"></div></div>
+            <div class="class-bucket" data-class="Alpha1 Agonist"><h3>Alpha1 Agonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
+            <div class="class-bucket" data-class="Alpha1 Antagonist"><h3>Alpha1 ANTagonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
+            <div class="class-bucket" data-class="Alpha2 Agonist"><h3>Alpha2 Agonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
+            <div class="class-bucket" data-class="Alpha2 Antagonist"><h3>Alpha2 ANTagonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
+            <div class="class-bucket" data-class="Nonselective Alpha Agonist"><h3>Nonselective Alpha Agonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
+            <div class="class-bucket" data-class="Nonselective Alpha Antagonist"><h3>Nonselective Alpha ANTagonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
+            <div class="class-bucket" data-class="Beta 1 Agonist"><h3>Beta 1 Agonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
         </div>
     </div>
 
@@ -171,20 +205,3 @@
         let currentPhase = 1;
         let score = 0;
         const totalCards = 19;
-        const pool = document.getElementById('cards-pool');
-
-        function flashError(card) {
-            card.style.backgroundColor = '#e74c3c';
-            setTimeout(() => { card.style.backgroundColor = '#0984e3'; }, 400);
-        }
-
-        function handlePhase1Match(card, bucket) {
-            bucket.appendChild(card);
-            card.draggable = false; card.style.backgroundColor = '#2ecc71';
-            score++; document.getElementById('score').innerText = score;
-            if(score === totalCards) { setTimeout(startPhase2, 400); }
-        }
-
-        function handlePhase2Match(card, subBox) {
-            subBox.appendChild(card); card.draggable = false; card.style.backgroundColor = '#9b59b6';
-            score++; document.getElementById('score').innerText = score;
