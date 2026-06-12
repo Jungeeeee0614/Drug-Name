@@ -13,10 +13,17 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f3f4;
-            overflow-x: hidden;
         }
         body { display: flex; flex-direction: column; padding: 15px; }
-        header { text-align: center; margin-bottom: 15px; flex-shrink: 0; }
+        header { 
+            text-align: center; 
+            margin-bottom: 15px; 
+            flex-shrink: 0;
+            border: 3px solid #00b894; /* Green border means the final working build loaded! */
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 8px;
+        }
         h1 { color: #2c3e50; margin: 0 0 5px 0; font-size: 1.6rem; }
         p { color: #7f8c8d; margin: 0; font-size: 0.95rem; font-weight: bold; }
         
@@ -29,7 +36,6 @@
             font-size: 0.85rem;
             margin-top: 5px;
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: bold;
         }
         #cards-pool {
@@ -56,14 +62,48 @@
             user-select: none;
             -webkit-user-select: none;
             font-size: 0.95rem;
-            transition: transform 0.1s, background-color 0.2s;
         }
-        .drug-card:active { transform: scale(0.95); }
         .selected-card {
-            background-color: #e67e22 !important; /* Visual cue when active */
-            transform: scale(1.05);
-            box-shadow: 0 0 12px #e67e22;
+            background-color: #e67e22 !important;
+            box-shadow: 0 0 15px #e67e22;
         }
+        
+        /* Direct Choice Routing Menu Layout */
+        #routing-menu {
+            display: none;
+            background-color: #ffffff;
+            border: 2px solid #e67e22;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 10px 0;
+            flex-shrink: 0;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        #routing-menu-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        #menu-options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .route-choice-btn {
+            background-color: #f1f2f6;
+            border: 1.5px solid #ced6e0;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: #2f3542;
+        }
+        .route-choice-btn:hover { background-color: #dfe4ea; }
+
         #classes-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -81,8 +121,6 @@
             gap: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             min-height: 140px;
-            cursor: pointer;
-            transition: background-color 0.2s;
         }
         .class-bucket h3 {
             margin: 0 0 5px 0;
@@ -95,49 +133,37 @@
         .sub-zone {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 5px;
             margin-top: 5px;
-        }
-        .sub-bucket-btn {
-            background-color: #f1f2f6;
-            border: 1.5px solid #ced6e0;
-            color: #2f3542;
+            background-color: #f8f9fa;
+            padding: 6px;
             border-radius: 6px;
-            padding: 8px;
+        }
+        .sub-item-display {
             font-size: 0.8rem;
             font-weight: bold;
-            text-align: left;
-            cursor: pointer;
+            color: #7f8c8d;
+            border-bottom: 1px dashed #ced6e0;
+            padding: 4px 0;
             display: flex;
             flex-direction: column;
+            gap: 3px;
+        }
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
             gap: 4px;
         }
-        .sub-bucket-btn:hover { background-color: #dfe4ea; }
-        .placed-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        .nested-tag {
-            background-color: #9b59b6;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-        }
-        .bucket-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: auto;
-        }
-        .class-tag {
+        .placed-tag {
             background-color: #2ecc71;
             color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
             font-weight: bold;
+        }
+        .phase2-tag {
+            background-color: #9b59b6 !important;
         }
         #footer-bar { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #dcdde1; margin-top: auto; }
         #score-board { font-size: 1.1rem; font-weight: bold; color: #27ae60; }
@@ -147,8 +173,8 @@
 <body>
 
     <header>
-        <h1>Autonomic Two-Stage Mastery</h1>
-        <p id="instruction-text">STEP 1: Tap a medication card, then tap its major receptor class box below!</p>
+        <h1>Autonomic Pharmacology Two-Stage Mastery</h1>
+        <p id="instruction-text">STAGE 1: Click a blue medication card to open its routing options menu!</p>
         <div id="phase-indicator">Stage 1: Receptor Classes</div>
     </header>
 
@@ -175,33 +201,16 @@
             <div class="drug-card" id="d19" data-class="Alpha2 Agonist" data-sub="ADHD">Guanfacine</div>
         </div>
 
-        <div id="classes-container">
-            <div class="class-bucket" data-class="Alpha1 Agonist"><h3>Alpha1 Agonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Alpha1 Antagonist"><h3>Alpha1 ANTagonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Alpha2 Agonist"><h3>Alpha2 Agonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Alpha2 Antagonist"><h3>Alpha2 ANTagonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Nonselective Alpha Agonist"><h3>Nonselective Alpha Agonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Nonselective Alpha Antagonist"><h3>Nonselective Alpha ANTagonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
-            <div class="class-bucket" data-class="Beta 1 Agonist"><h3>Beta 1 Agonists</h3><div class="bucket-tags"></div><div class="sub-zone" style="display:none;"></div></div>
+        <!-- Dynamic Action Routing Choice Dashboard Bar -->
+        <div id="routing-menu">
+            <div id="routing-menu-title">Route Medication: <span id="target-drug-name" style="color:#e67e22;">None</span></div>
+            <div id="menu-options-container"></div>
         </div>
-    </div>
 
-    <div id="footer-bar">
-        <div id="score-board">Progress: <span id="score">0</span> / 19</div>
-        <button class="reset-btn" onclick="location.reload()">Restart</button>
-    </div>
-
-    <script>
-        const subConfig = {
-            "Alpha1 Agonist": ["Hypotension/Shock", "Orthostatic Hypotension", "Nasal Congestion"],
-            "Alpha1 Antagonist": ["BPH ONLY", "PTSD Nightmares & BPH + HTN", "BPH + HTN"],
-            "Alpha2 Agonist": ["HTN Urgency", "HTN in Pregnancy", "Procedural Sedation", "Muscle Spasms", "ADHD"],
-            "Alpha2 Antagonist": ["Depression", "ED"],
-            "Nonselective Alpha Agonist": ["No Subcategory Listed"],
-            "Nonselective Alpha Antagonist": ["*IRREVERSIBLE*(Pheochromocytoma Management)", "*REVERSIBLE*(induced tissue ischemia & different induced HTN crises)"],
-            "Beta 1 Agonist": ["*B1 > B2 > A1*(Acute Heart Failure/Cardiogenic Shock)"]
-        };
-
-        let currentPhase = 1;
-        let score = 0;
-        const totalCards = 19;
+        <div id="classes-container">
+            <div class="class-bucket" data-class="Alpha1 Agonist"><h3>Alpha1 Agonists</h3><div class="tag-row" id="p1-Alpha1-Agonist"></div><div class="sub-zone" id="sub-Alpha1-Agonist"></div></div>
+            <div class="class-bucket" data-class="Alpha1 Antagonist"><h3>Alpha1 ANTagonists</h3><div class="tag-row" id="p1-Alpha1-Antagonist"></div><div class="sub-zone" id="sub-Alpha1-Antagonist"></div></div>
+            <div class="class-bucket" data-class="Alpha2 Agonist"><h3>Alpha2 Agonists</h3><div class="tag-row" id="p1-Alpha2-Agonist"></div><div class="sub-zone" id="sub-Alpha2-Agonist"></div></div>
+            <div class="class-bucket" data-class="Alpha2 Antagonist"><h3>Alpha2 ANTagonists</h3><div class="tag-row" id="p1-Alpha2-Antagonist"></div><div class="sub-zone" id="sub-Alpha2-Antagonist"></div></div>
+            <div class="class-bucket" data-class="Nonselective Alpha Agonist"><h3>Nonselective Alpha Agonists</h3><div class="tag-row" id="p1-Nonselective-Alpha-Agonist"></div><div class="sub-zone" id="sub-Nonselective-Alpha-Agonist"></div></div>
+            <div class="class-bucket" data-class="Nonselective Alpha Antagonist"><h3>Nonselective Alpha ANTagonists</h3><div class="tag-row" id="p1-Nonselective-Alpha-Antagonist"></div><div class="sub-zone" id="sub-Nonselective-Alpha-Antagonist"></div></div>
